@@ -1,0 +1,24 @@
+<div class="login-form-wrapper">
+  <form [formGroup]="loginForm" (ngSubmit)="login()" class="login-form">
+    <h1>Login</h1>
+    <div>
+      <input formControlName="email" type="email" placeholder="Email" autocomplete="username" />
+      <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="error">
+        Enter a valid email.
+      </div>
+    </div>
+    <div>
+      <input formControlName="password" type="password" placeholder="Password" autocomplete="current-password" />
+      <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="error">
+        Password is required.
+      </div>
+    </div>
+    <button type="submit" [disabled]="loginForm.invalid || loading">Login</button>
+    <div *ngIf="serverError" class="error">{{ serverError }}</div>
+    <div class="form-footer">
+      <span>Don’t have an account?</span>
+      <a [routerLink]="['/register']">Register here</a>
+    </div>
+  </form>
+</div>
+

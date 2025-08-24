@@ -1,0 +1,58 @@
+<div class="register-form-wrapper">
+  <form [formGroup]="registerForm" (ngSubmit)="register()" class="split-form">
+
+  <div>
+    <h1>Angadi Ledger</h1>
+  </div>
+
+  <div>
+    <input formControlName="email" type="email" placeholder="Email" />
+    <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+      Enter a valid email.
+    </div>
+  </div>
+
+  <div>
+    <input formControlName="password" type="password" placeholder="Password" />
+    <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+      Password is required (min 6 chars).
+    </div>
+  </div>
+
+  <div>
+    <select formControlName="role">
+      <option value="admin">admin</option>
+      <option value="owner">owner</option>
+    </select>
+  </div>
+
+  <div *ngIf="registerForm.get('role')?.value === 'owner'">
+    <input formControlName="business_name" placeholder="Business Name" type="text"/>
+    <div *ngIf="registerForm.get('business_name')?.invalid && registerForm.get('business_name')?.touched">
+      Business Name is required for owners.
+    </div>
+  </div>
+
+  <div>
+    <input formControlName="phone_number" placeholder="Phone Number" type="text"/>
+    <div *ngIf="registerForm.get('phone_number')?.invalid && registerForm.get('phone_number')?.touched">
+      Phone Number is required.
+    </div>
+  </div>
+
+  <div>
+    <input type="checkbox" required />I agree to the terms and condition by signing up
+  </div>
+
+  <button type="submit" [disabled]="registerForm.invalid">Register</button>
+
+  <div *ngIf="serverError" class="error">{{ serverError }}</div>
+
+  <div>
+    Already have an account?
+    <a routerLink="/login">Sign in</a>
+  </div>
+
+ </form>
+
+</div>

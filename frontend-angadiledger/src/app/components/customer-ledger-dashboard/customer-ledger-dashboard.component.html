@@ -1,0 +1,233 @@
+
+<app-navbar></app-navbar>
+
+<div class="dashboard-container">
+  <h2>Customer & Ledger Dashboard</h2>
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">Customers</span>
+      <button class="add-btn" (click)="openCustomerModal()">Add Customer</button>
+    </div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Name</th><th>Email</th><th>Phone</th><th>Type</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let customer of customers">
+          <td>{{customer.name}}</td>
+          <td>{{customer.email}}</td>
+          <td>{{customer.phone_number}}</td>
+          <td>{{customer.relationship_type}}</td>
+          <td>
+            <button class="view-btn" (click)="selectCustomer(customer)">View</button>
+            <button class="edit-btn" (click)="openCustomerModal(true, customer)">Edit</button>
+            <button class="delete-btn" (click)="deleteCustomer(customer)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="selectedCustomer" class="section">
+    <div class="section-header">
+      <span class="section-title">Ledger Entries for {{selectedCustomer.name}}</span>
+      <button class="add-btn" (click)="openLedgerModal()" [disabled]="!selectedCustomer">Add Ledger Entry</button>
+    </div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Date</th><th>Type</th><th>Amount</th><th>Description</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let ledger of ledgers">
+          <td>{{ledger.created_at | date:'short'}}</td>
+          <td>{{ledger.entry_type}}</td>
+          <td>{{ledger.amount}}</td>
+          <td>{{ledger.description}}</td>
+          <td>
+            <button class="edit-btn" (click)="openLedgerModal(true, ledger)">Edit</button>
+            <button class="delete-btn" (click)="deleteLedger(ledger)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="selectedCustomer" class="section">
+    <div class="section-header">
+      <span class="section-title">Payments for {{selectedCustomer.name}}</span>
+      <button class="add-btn" (click)="downloadPaymentsCsv(selectedCustomer.id)">Download CSV</button>
+    </div>
+    <table class="data-table" *ngIf="payments.length">
+      <thead>
+        <tr>
+          <th>Date</th><th>Amount</th><th>Method</th><th>Reference</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let payment of payments">
+          <td>{{payment.created_at}}</td>
+          <td>{{payment.amount}}</td>
+          <td>{{payment.status}}</td>
+          <td>{{payment.description}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div *ngIf="!payments.length">No payments found for this customer.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">Partial Settlements</span>
+      <button class="add-btn" (click)="downloadPartialSettlementsCsv()">Download CSV</button>
+    </div>
+    <table class="data-table" *ngIf="partialSettlements.length">
+      <thead>
+        <tr>
+          <th>Customer</th><th>Amount</th><th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let settlement of partialSettlements">
+          <td>{{settlement.customer_name}}</td>
+          <td>{{settlement.balance}}</td>
+          <td>{{settlement.status}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div *ngIf="!partialSettlements.length">No partial settlements found.</div>
+  </div>
+
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">Outstanding Balances (Over Threshold)</span>
+      <button class="add-btn" (click)="downloadOutstandingBalancesCsv()">Download CSV</button>
+    </div>
+    <table class="data-table" *ngIf="outstandingBalances.length">
+      <thead>
+        <tr>
+          <th>Customer</th><th>Balance</th><th>Contact</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let balance of outstandingBalances">
+          <td>{{balance.customer_name}}</td>
+          <td>{{balance.outstanding_balance}}</td>
+          <td>{{balance.contact}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div *ngIf="!outstandingBalances.length">No outstanding balances found.</div>
+    <div *ngIf="reminderResult" class="success-msg">
+      Sent: {{reminderResult.sent.length}}, Failed: {{reminderResult.failed.length}}
+    </div>
+    <div *ngIf="reminderResult?.failed?.length" class="error-msg">
+      <div *ngFor="let fail of reminderResult?.failed">
+        {{fail.customer}}: {{fail.reason}}
+      </div>
+    </div>
+  </div>
+</div><div class="section">
+  <div class="section-header">
+    <span class="section-title">Outstanding Balances (Over Threshold)</span>
+    <div>
+      <button class="add-btn" (click)="downloadOutstandingBalancesCsv()">Download CSV</button>
+      <button class="add-btn"
+              (click)="sendReminders()"
+              [disabled]="outstandingBalances.length === 0">
+        Send Reminders
+      </button>
+    </div>
+  </div>
+  <table class="data-table" *ngIf="outstandingBalances.length">
+    <thead>
+      <tr>
+        <th>Customer</th><th>Balance</th><th>Contact</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let balance of outstandingBalances">
+        <td>{{balance.customer_name}}</td>
+        <td>{{balance.balance}}</td>
+        <td>{{balance.contact}}</td>
+      </tr>
+    </tbody>
+  </table>
+  <div *ngIf="!outstandingBalances.length">No outstanding balances found.</div>
+  <div *ngIf="reminderResult?.sent?.length" class="success-msg">
+    Reminders sent to: {{reminderResult?.sent?.join(', ')}}
+  </div>
+  <div *ngIf="reminderResult?.failed?.length" class="error-msg">
+    <div *ngFor="let fail of reminderResult?.failed">
+      {{fail.customer}}: {{fail.reason}}
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="showCustomerModal">
+  <div class="modal">
+    <h3>{{isEditCustomer ? 'Edit' : 'Add'}} Customer</h3>
+    <form (ngSubmit)="saveCustomer()">
+      <div class="form-group">
+        <label>Name</label>
+        <input [(ngModel)]="customerForm.name" name="name" required />
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input [(ngModel)]="customerForm.email" name="email" required />
+      </div>
+      <div class="form-group">
+        <label>Phone</label>
+        <input [(ngModel)]="customerForm.phone_number" name="phone_number" required />
+      </div>
+      <div class="form-group">
+        <label>Relationship Type</label>
+        <input [(ngModel)]="customerForm.relationship_type" name="relationship_type" required />
+      </div>
+      <div class="form-group">
+        <label>Notes</label>
+        <textarea [(ngModel)]="customerForm.notes" name="notes"></textarea>
+      </div>
+      <button class="edit-btn" type="submit">{{isEditCustomer ? 'Update' : 'Create'}}</button>
+      <button class="close-btn" type="button" (click)="closeCustomerModal()">Close</button>
+      <div *ngIf="errorMsg" class="error-msg">{{errorMsg}}</div>
+      <div *ngIf="successMsg" class="success-msg">{{successMsg}}</div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="showLedgerModal">
+  <div class="modal">
+    <h3>{{isEditLedger ? 'Edit' : 'Add'}} Ledger Entry</h3>
+    <form (ngSubmit)="saveLedger()">
+      <div class="form-group">
+        <label>Type</label>
+        <select [(ngModel)]="ledgerForm.entry_type" name="entry_type" required>
+          <option value="credit">Credit</option>
+          <option value="debit">Debit</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Amount</label>
+        <input type="number" [(ngModel)]="ledgerForm.amount" name="amount" required />
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <input [(ngModel)]="ledgerForm.description" name="description" />
+      </div>
+      <div class="form-group">
+        <label>Image URL</label>
+        <input [(ngModel)]="ledgerForm.image_url" name="image_url" />
+      </div>
+      <button class="edit-btn" type="submit">{{isEditLedger ? 'Update' : 'Create'}}</button>
+      <button class="close-btn" type="button" (click)="closeLedgerModal()">Close</button>
+      <div *ngIf="errorMsg" class="error-msg">{{errorMsg}}</div>
+      <div *ngIf="successMsg" class="success-msg">{{successMsg}}</div>
+    </form>
+  </div>
+</div>

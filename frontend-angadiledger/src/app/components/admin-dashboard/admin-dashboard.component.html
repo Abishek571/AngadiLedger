@@ -1,0 +1,43 @@
+<app-navbar></app-navbar>
+<div class="dashboard-container">
+  <div class="button-group">
+    <button class="primary-btn" (click)="showListOwners()">List Owners</button>
+    <button class="primary-btn" (click)="showAddOwnerForm()">Add Owner</button>
+  </div>
+
+ 
+  <div *ngIf="activeView === 'list'" class="table-container">
+    <table class="owners-table">
+      <thead>
+        <tr>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Verified</th>
+          <th>Business</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let owner of owners">
+          <td>{{ owner.email }}</td>
+          <td>{{ owner.phone_number }}</td>
+          <td>{{ owner.is_verified ? 'Yes' : 'No' }}</td>
+          <td>{{ owner.business_name }}</td>
+          <td>
+            <button class="delete-btn" (click)="deleteOwner(owner.id)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="activeView === 'add'" class="form-container">
+    <form (ngSubmit)="addOwner()" #addOwnerForm="ngForm">
+      <label>Email: <input [(ngModel)]="newOwner.email" name="email" required></label>
+      <label>Password: <input [(ngModel)]="newOwner.password" name="password" required type="password"></label>
+      <label>Phone: <input [(ngModel)]="newOwner.phone_number" name="phone_number" required></label>
+      <label>Business: <input [(ngModel)]="newOwner.business_name" name="business_name" required></label>
+      <button class="primary-btn" type="submit" [disabled]="addOwnerForm.invalid">Add Owner</button>
+    </form>
+  </div>
+</div>

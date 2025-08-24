@@ -1,0 +1,143 @@
+:root {
+  --primary-color: #1976d2;     
+  --primary-hover: #1565c0;
+  --error-color: #d32f2f;        
+  --background-color: #f5f7fa; 
+  --form-bg: #fff;
+  --input-border: #212121;    
+  --input-focus: #1976d2;
+  --gap: 16px;                 
+  --border-radius: 24px;      
+  --font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+}
+
+body, .register-form-wrapper {
+  min-height: 100vh;
+  background: var(--background-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+}
+
+/* Form container styling with curved border and light shadow */
+.split-form {
+  background: var(--form-bg);
+  border-radius: var(--border-radius);         /* Curved border */
+  border: 2px solid #212121;                   /* Black border */
+  box-shadow: 0 4px 24px rgba(33, 33, 33, 0.08); /* Light shadow */
+  padding: 40px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);                             /* Uniform gap */
+  font-family: var(--font-family);
+  min-width: 320px;
+  max-width: 400px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Title styling */
+.split-form h1 {
+  margin: 0 0 8px 0;
+  color: var(--primary-color);
+  font-size: 2rem;
+  text-align: center;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+/* Group each input and its error message together */
+.split-form > div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Input and select styling with black border and light shadow */
+.split-form input[type="text"],
+.split-form input[type="email"],
+.split-form input[type="password"],
+.split-form select {
+  width: 100%;
+  padding: 12px 10px;
+  border: 1.5px solid var(--input-border); /* Black border */
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  box-sizing: border-box;
+  background: #fafbfc;
+  box-shadow: 0 2px 6px rgba(33,33,33,0.08); /* Light shadow */
+  transition: border 0.2s, box-shadow 0.2s;
+  margin-bottom: var(--gap); /* Uniform gap between fields */
+}
+
+.split-form input:focus,
+.split-form select:focus {
+  border-color: var(--input-focus);
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.10); /* Slightly blue shadow on focus */
+  outline: none;
+}
+
+/* Checkbox styling */
+.split-form input[type="checkbox"] {
+  width: auto;
+  margin-right: 8px;
+  vertical-align: middle;
+  margin-bottom: 0;
+}
+
+/* Button styling: blue background, light shadow */
+.split-form button[type="submit"] {
+  background: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 0;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+  margin-top: var(--gap);
+  box-shadow: 0 2px 6px rgba(33,33,33,0.08); /* Light shadow */
+}
+
+.split-form button[type="submit"]:hover {
+  background: var(--primary-hover);
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.10); /* Slightly blue shadow on hover */
+}
+
+.split-form button[type="submit"]:disabled {
+  background: #b0bec5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Error message styling */
+.split-form .error,
+.split-form div > div[ng-reflect-ng-if="true"] {
+  color: var(--error-color);
+  font-size: 0.95rem;
+  min-height: 20px;
+}
+
+/* Link styling */
+.split-form a {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 500;
+  margin-left: 4px;
+}
+
+.split-form a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+  .split-form {
+    padding: 24px 8px;
+    min-width: unset;
+    max-width: 100%;
+  }
+}

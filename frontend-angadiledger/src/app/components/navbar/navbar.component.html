@@ -1,0 +1,32 @@
+<nav class="navbar">
+  <div class="navbar-title">
+    Angadi Ledger
+  </div>
+  <div class="navbar-actions">
+    <button class="icon-btn" aria-label="Notifications">
+      <svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 22a2 2 0 0 0 2-2h-4a2 2 0 0 0 2 2zm6-6V11a6 6 0 0 0-5-5.92V4a1 1 0 0 0-2 0v1.08A6 6 0 0 0 6 11v5l-1.29 1.29A1 1 0 0 0 6 19h12a1 1 0 0 0 .71-1.71z" fill="#555"/></svg>
+    </button>
+    <button class="access-ledger-btn" (click)="goToCustomerLedger()">
+      Customer Ledger
+    </button>
+    <div class="profile-menu">
+      <button class="icon-btn" aria-label="Profile" (click)="toggleProfileMenu()">
+        <svg width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="#555"/><path d="M4 20v-1a8 8 0 0 1 16 0v1" fill="none" stroke="#555" stroke-width="2"/></svg>
+      </button>
+      <div class="profile-dropdown" *ngIf="showProfileMenu">
+        <ng-container *ngIf="profile; else loading">
+          <div><strong>Email:</strong> {{profile.personal.email}}</div>
+          <div><strong>Phone:</strong> {{profile.personal.phone_number}}</div>
+          <div><button (click)="logout()">logout</button></div>
+          <div><button (click)="goToAnalticsDashBoard()">Analytics DashBoard</button></div>
+          <div *ngIf="profile.business.business_name"><strong>Business:</strong> {{profile.business.business_name}}</div>
+          <div *ngIf="profile.business.assigned_role"><strong>Assigned Role:</strong> {{profile.business.assigned_role}}</div>
+        </ng-container>
+        <ng-template #loading>
+          <div>Loading profile...</div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</nav>
+

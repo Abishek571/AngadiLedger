@@ -1,0 +1,81 @@
+<app-navbar></app-navbar>
+<div class="dashboard-container">
+  <h2>Add New Staff</h2>
+  <form class="staff-form" (ngSubmit)="createStaff()" #staffForm="ngForm">
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" required [(ngModel)]="newStaff.email" name="email" />
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" required [(ngModel)]="newStaff.password" name="password" />
+    </div>
+    <div class="form-group">
+      <label>Phone Number</label>
+      <input type="text" required [(ngModel)]="newStaff.phone_number" name="phone_number" />
+    </div>
+    <div class="form-group">
+      <label>Assigned Role</label>
+      <select required [(ngModel)]="newStaff.assigned_role" name="assigned_role">
+        <option value="" disabled selected>Select role</option>
+        <option value="supervisor">Supervisor</option>
+        <option value="cashier">Cashier</option>
+        <option value="salesman">Salesman</option>
+      </select>
+    </div>
+    <button type="submit" [disabled]="staffForm.invalid">Create Staff</button>
+    <div *ngIf="staffCreateError" class="error-msg">{{staffCreateError}}</div>
+    <div *ngIf="staffCreateSuccess" class="success-msg">Staff created successfully!</div>
+  </form>
+
+  <h2>Staff List</h2>
+  <table class="staff-table">
+    <thead>
+      <tr>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Assigned Role</th>
+        <th>Business</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let staff of staffList; let i = index">
+        <td>{{staff.email}}</td>
+        <td>{{staff.phone_number}}</td>
+        <td>{{staff.assigned_role}}</td>
+        <td>{{staff.business_name}}</td>
+        <td>
+          <button class="view-btn" (click)="openStaffDetail(staff, i)">View</button>
+          <button class="delete-btn" (click)="deleteStaff(staff, i)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="modal-backdrop" *ngIf="showDetailModal">
+  <div class="modal">
+    <h3>Staff Details</h3>
+    <div *ngIf="selectedStaff">
+      <div><strong>Email:</strong> {{selectedStaff.email}}</div>
+      <div>
+        <label><strong>Phone Number:</strong></label>
+        <input [(ngModel)]="selectedStaffEdit.phone_number" />
+      </div>
+      <div>
+        <label><strong>Assigned Role:</strong></label>
+        <select [(ngModel)]="selectedStaffEdit.assigned_role">
+          <option value="supervisor">Supervisor</option>
+          <option value="cashier">Cashier</option>
+          <option value="salesman">Salesman</option>
+        </select>
+      </div>
+      <div><strong>Business:</strong> {{selectedStaff.business_name}}</div>
+      <button class="edit-btn" (click)="updateStaff()">Edit</button>
+      <button class="close-btn" (click)="closeDetailModal()">Close</button>
+      <div *ngIf="staffUpdateMsg" class="success-msg">{{staffUpdateMsg}}</div>
+      <div *ngIf="staffUpdateError" class="error-msg">{{staffUpdateError}}</div>
+    </div>
+  </div>
+</div>
